@@ -9,23 +9,37 @@ const BG = '#F3F3F3', INK = '#2B2B2B', GREY = '#8C8C8C';
 
 // Cột ảnh bên phải: x từ L đến R, mỗi ô là đa giác (cạnh chéo theo mẫu)
 const L = 123, R = 205, f = t => +(L + t * (R - L)).toFixed(2);
+// Ảnh tự điền: đặt file vào canva-lambo/photos/ theo tên ở cột thứ 3 (jpg/png), ảnh được cắt cover theo ô
 const SLOTS = [
-  ['ẢNH XE 1', [[L, 10], [f(.684), 10], [f(.645), 46], [L, 46]]],
-  ['ẢNH XE 2', [[f(.724), 10], [R, 10], [R, 46], [f(.684), 46]]],
-  ['ẢNH KHÁCH 1', [[L, 49], [f(.91), 49], [f(.78), 107], [L, 107]]],
-  ['XE 3', [[f(.95), 49], [R, 49], [R, 107], [f(.82), 107]]],
-  ['ẢNH XE 4', [[L, 110], [R, 110], [R, 201], [L, 201]]],
-  ['ẢNH KHÁCH 2', [[L, 204], [f(.63), 204], [f(.745), 248], [L, 248]]],
-  ['ẢNH XE 5', [[f(.67), 204], [R, 204], [R, 248], [f(.785), 248]]],
+  ['ẢNH XE 1', [[L, 10], [f(.684), 10], [f(.645), 46], [L, 46]], 'xe1'],
+  ['ẢNH XE 2', [[f(.724), 10], [R, 10], [R, 46], [f(.684), 46]], 'xe2'],
+  ['ẢNH KHÁCH 1', [[L, 49], [f(.91), 49], [f(.78), 107], [L, 107]], 'khach1'],
+  ['XE 3', [[f(.95), 49], [R, 49], [R, 107], [f(.82), 107]], 'xe3'],
+  ['ẢNH XE 4', [[L, 110], [R, 110], [R, 201], [L, 201]], 'xe4'],
+  ['ẢNH KHÁCH 2', [[L, 204], [f(.63), 204], [f(.745), 248], [L, 248]], 'khach2'],
+  ['ẢNH XE 5', [[f(.67), 204], [R, 204], [R, 248], [f(.785), 248]], 'xe5'],
 ];
+const photo = n => {
+  for (const ext of ['jpg', 'jpeg', 'png', 'webp']) {
+    const fp = `${__dirname}/photos/${n}.${ext}`;
+    if (fs.existsSync(fp)) return `data:image/${ext === 'jpg' ? 'jpeg' : ext};base64,` + fs.readFileSync(fp).toString('base64');
+  }
+};
+const bbox = p => { const xs = p.map(q => q[0]), ys = p.map(q => q[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)]; };
 const pts = p => p.map(q => q.join(',')).join(' ');
 const centroid = p => p.reduce((a, q) => [a[0] + q[0] / p.length, a[1] + q[1] / p.length], [0, 0]);
 
 function svg({ name, date, mode }) { // mode: 'preview' (ô xám có nhãn) | 'overlay' (ô trong suốt)
+  const photos = SLOTS.map(([, p, n], i) => {
+    const src = photo(n); if (!src) return '';
+    const [x, y, w, h] = bbox(p);
+    return `<clipPath id="s${i}"><polygon points="${pts(p)}"/></clipPath><image href="${src}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#s${i})"/>`;
+  }).join('');
   const holes = SLOTS.map(([, p]) => `<polygon points="${pts(p)}" fill="#000"/>`).join('');
   const bg = mode === 'overlay'
     ? `<mask id="m"><rect width="210" height="297" fill="#fff"/>${holes}</mask><rect width="210" height="297" fill="${BG}" mask="url(#m)"/>`
-    : `<rect width="210" height="297" fill="${BG}"/>` + SLOTS.map(([t, p]) => {
+    : `<rect width="210" height="297" fill="${BG}"/>` + SLOTS.map(([t, p, n]) => {
+        if (photo(n)) return '';
         const [cx, cy] = centroid(p);
         return `<polygon points="${pts(p)}" fill="#CFCFCF"/><text x="${cx}" y="${cy + 1.2}" text-anchor="middle" font-family="Barlow Condensed" font-weight="600" font-size="3.6" fill="#888">${t}</text>`;
       }).join('');
@@ -33,7 +47,7 @@ function svg({ name, date, mode }) { // mode: 'preview' (ô xám có nhãn) | 'o
   const spec = (x, y, k, v) => `<text x="${x}" y="${y}" font-family="Barlow Condensed" font-size="3.9" fill="${GREY}">${k}</text>
     <text x="${x}" y="${y + 4.8}" font-family="Barlow Condensed" font-weight="700" font-size="4.6" fill="${INK}">${v}</text>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297">
-  ${bg}${borders}
+  ${bg}${mode === 'overlay' ? '' : photos}${borders}
   <rect x="118.5" y="0" width="1" height="297" fill="${INK}"/>
   <image href="${LOGO}" x="47" y="31" width="16" height="16" preserveAspectRatio="xMidYMid meet"/>
   <text transform="translate(132,260) skewX(-14)" font-family="Michroma" font-size="10" textLength="73" lengthAdjust="spacingAndGlyphs" fill="${INK}" stroke="${INK}" stroke-width="0.35">REVUELTO</text>
