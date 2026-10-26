@@ -4,6 +4,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const NAME = (process.argv[2] ?? 'THAI VU').toUpperCase();
 const VB = process.argv[3] || '35 45 640 905'; // vùng in A4
+const CREST = 'data:image/png;base64,' + fs.readFileSync(__dirname + '/porsche-crest.png').toString('base64');
 const BG = '#DFA3AD', ROSE = '#B8325A';
 
 function svg(name, { title = true, w = '210mm', h = '297mm' } = {}) {
@@ -19,7 +20,8 @@ function svg(name, { title = true, w = '210mm', h = '297mm' } = {}) {
   <g clip-path="url(#c)">
   <rect x="0" y="0" width="700" height="1000" fill="${BG}"/>
   <circle cx="335" cy="15" r="300" fill="#fff" fill-opacity=".16"/>
-  ${title ? porsche + pan : ''}${nm}</g></svg>`;
+  ${title ? porsche + pan : ''}${nm}
+  ${title ? `<image href="${CREST}" x="58" y="848" width="72" height="86" preserveAspectRatio="xMinYMax meet"/>` : ''}</g></svg>`;
 }
 const html = s => `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Michroma&family=Allison&family=Lexend+Zetta:wght@300&display=swap" rel="stylesheet">
 <style>*{margin:0}body{width:210mm;height:297mm;overflow:hidden}svg{display:block}</style></head><body>${s}</body></html>`;
