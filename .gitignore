@@ -1,2 +1,4 @@
 canva-lambo/photos/*
 !canva-lambo/photos/README.txt
+canva-lambo/preview-*
+canva-lambo/overlay-*
