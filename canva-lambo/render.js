@@ -35,7 +35,7 @@ function svg({ name, date, mode }) { // mode: 'preview' (ô xám có nhãn) | 'o
     const [x, y, w, h] = bbox(p);
     return `<clipPath id="s${i}"><polygon points="${pts(p)}"/></clipPath><image href="${src}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#s${i})"/>`;
   }).join('');
-  const holes = SLOTS.map(([, p]) => `<polygon points="${pts(p)}" fill="#000"/>`).join('');
+  const holes = SLOTS.filter(([, , n]) => !photo(n)).map(([, p]) => `<polygon points="${pts(p)}" fill="#000"/>`).join('');
   const bg = mode === 'overlay'
     ? `<mask id="m"><rect width="210" height="297" fill="#fff"/>${holes}</mask><rect width="210" height="297" fill="${BG}" mask="url(#m)"/>`
     : `<rect width="210" height="297" fill="${BG}"/>` + SLOTS.map(([t, p, n]) => {
@@ -47,7 +47,7 @@ function svg({ name, date, mode }) { // mode: 'preview' (ô xám có nhãn) | 'o
   const spec = (x, y, k, v) => `<text x="${x}" y="${y}" font-family="Barlow Condensed" font-size="3.9" fill="${GREY}">${k}</text>
     <text x="${x}" y="${y + 4.8}" font-family="Barlow Condensed" font-weight="700" font-size="4.6" fill="${INK}">${v}</text>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297">
-  ${bg}${mode === 'overlay' ? '' : photos}${borders}
+  ${bg}${photos}${borders}
   <rect x="118.5" y="0" width="1" height="297" fill="${INK}"/>
   <image href="${LOGO}" x="47" y="31" width="16" height="16" preserveAspectRatio="xMidYMid meet"/>
   <text transform="translate(132,260) skewX(-14)" font-family="Michroma" font-size="10" textLength="73" lengthAdjust="spacingAndGlyphs" fill="${INK}" stroke="${INK}" stroke-width="0.35">REVUELTO</text>
