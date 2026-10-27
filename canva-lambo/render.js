@@ -6,6 +6,8 @@ const NAME = (process.argv[2] ?? 'THANH LONG').toUpperCase();
 const DATE = process.argv[3] ?? '14/02/2026';
 const LOGO = 'data:image/png;base64,' + fs.readFileSync(__dirname + '/lamborghini-logo.png').toString('base64');
 const BG = '#F3F3F3', INK = '#2B2B2B', GREY = '#8C8C8C';
+// THEME=dark: nửa trái nền đen, tên trắng, ngày trắng + vàng (bản 2)
+const DARK = process.env.THEME === 'dark', LEFT_BG = '#161616', GOLD = '#C9A75A';
 
 // Cột ảnh bên phải: x từ L đến R, mỗi ô là đa giác (cạnh chéo theo mẫu)
 const L = 123, R = 205, f = t => +(L + t * (R - L)).toFixed(2);
@@ -48,13 +50,15 @@ function svg({ name, date, mode }) { // mode: 'preview' (ô xám có nhãn) | 'o
     <text x="${x}" y="${y + 4.8}" font-family="Barlow Condensed" font-weight="700" font-size="4.6" fill="${INK}">${v}</text>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297">
   ${bg}${photos}${borders}
+  ${DARK ? `<rect x="0" y="0" width="119" height="297" fill="${LEFT_BG}"/>` : ''}
   <rect x="118.5" y="0" width="1" height="297" fill="${INK}"/>
   <image href="${LOGO}" x="47" y="31" width="16" height="16" preserveAspectRatio="xMidYMid meet"/>
   <text transform="translate(132,260) skewX(-14)" font-family="Michroma" font-size="10" textLength="73" lengthAdjust="spacingAndGlyphs" fill="${INK}" stroke="${INK}" stroke-width="0.35">REVUELTO</text>
   ${spec(133, 265.5, 'ENGINE', 'V12 6.5L')}${spec(173, 265.5, 'POWER', '1001 HP')}
   ${spec(133, 279.5, 'TOP SPEED', '&gt;350 KM/H')}${spec(173, 279.5, '0-100 KM/H', '2.5 SECONDS')}
-  ${name ? `<text x="105" y="282.8" text-anchor="end" font-family="Syncopate" font-weight="700" font-size="7" textLength="${Math.min(89, 8.9 * name.length)}" lengthAdjust="spacingAndGlyphs" fill="${INK}">${name}</text>` : ''}
-  ${date ? `<text x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="none" stroke="${GREY}" stroke-width="0.22">${date}</text>` : ''}
+  ${name ? `<text x="105" y="282.8" text-anchor="end" font-family="Syncopate" font-weight="700" font-size="7" textLength="${Math.min(89, 8.9 * name.length)}" lengthAdjust="spacingAndGlyphs" fill="${DARK ? '#FFFFFF' : INK}">${name}</text>` : ''}
+  ${date && DARK ? `<text x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="#FFFFFF"><tspan fill="${GOLD}">${date.slice(0, 2)}</tspan>${date.slice(2, -2)}<tspan fill="${GOLD}">${date.slice(-2)}</tspan></text>` : ''}
+  ${date && !DARK ? `<text x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="none" stroke="${GREY}" stroke-width="0.22">${date}</text>` : ''}
 </svg>`;
 }
 const html = s => `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Michroma&family=Syncopate:wght@400;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
@@ -63,11 +67,11 @@ const html = s => `<!doctype html><html><head><link href="https://fonts.googleap
 (async () => {
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 794, height: 1123 }, deviceScaleFactor: 3.125 });
-  const slug = NAME.replace(/\s+/g, '-');
+  const slug = NAME.replace(/\s+/g, '-') + (DARK ? '-dark' : '');
   const jobs = [
     [`preview-${slug}`, { name: NAME, date: DATE, mode: 'preview' }],
     [`overlay-${slug}`, { name: NAME, date: DATE, mode: 'overlay' }],
-    ['overlay-khong-ten', { name: '', date: '', mode: 'overlay' }],
+    [DARK ? 'overlay-khong-ten-dark' : 'overlay-khong-ten', { name: '', date: '', mode: 'overlay' }],
   ];
   for (const [f, o] of jobs) {
     const s = svg(o);
