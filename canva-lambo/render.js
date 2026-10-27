@@ -6,7 +6,7 @@ const NAME = (process.argv[2] ?? 'THANH LONG').toUpperCase();
 const DATE = process.argv[3] ?? '14/02/2026';
 const LOGO = 'data:image/png;base64,' + fs.readFileSync(__dirname + '/lamborghini-logo.png').toString('base64');
 const BG = '#F3F3F3', INK = '#2B2B2B', GREY = '#8C8C8C';
-// THEME=dark: nửa trái nền đen, tên trắng, ngày trắng + vàng (bản 2)
+// THEME=dark: nửa trái nền đen, tên trắng. Ngày: 2 số đầu + 2 số cuối vàng, giữa trắng (bản đen) / đen (bản trắng)
 const DARK = process.env.THEME === 'dark', LEFT_BG = '#161616', GOLD = '#C9A75A';
 
 // Cột ảnh bên phải: x từ L đến R, mỗi ô là đa giác (cạnh chéo theo mẫu)
@@ -57,8 +57,7 @@ function svg({ name, date, mode }) { // mode: 'preview' (ô xám có nhãn) | 'o
   <g data-layer="thong-so">${spec(133, 265.5, 'ENGINE', 'V12 6.5L')}${spec(173, 265.5, 'POWER', '1001 HP')}
   ${spec(133, 279.5, 'TOP SPEED', '&gt;350 KM/H')}${spec(173, 279.5, '0-100 KM/H', '2.5 SECONDS')}</g>
   ${name ? `<text data-layer="ten-khach" x="105" y="282.8" text-anchor="end" font-family="Syncopate" font-weight="700" font-size="7" textLength="${Math.min(89, 8.9 * name.length)}" lengthAdjust="spacingAndGlyphs" fill="${DARK ? '#FFFFFF' : INK}">${name}</text>` : ''}
-  ${date && DARK ? `<text data-layer="ngay" x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="#FFFFFF"><tspan fill="${GOLD}">${date.slice(0, 2)}</tspan>${date.slice(2, -2)}<tspan fill="${GOLD}">${date.slice(-2)}</tspan></text>` : ''}
-  ${date && !DARK ? `<text data-layer="ngay" x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="none" stroke="${GREY}" stroke-width="0.22">${date}</text>` : ''}
+  ${date ? `<text data-layer="ngay" x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="${DARK ? '#FFFFFF' : INK}"><tspan fill="${GOLD}">${date.slice(0, 2)}</tspan>${date.slice(2, -2)}<tspan fill="${GOLD}">${date.slice(-2)}</tspan></text>` : ''}
 </svg>`;
 }
 const html = s => `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Michroma&family=Syncopate:wght@400;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
