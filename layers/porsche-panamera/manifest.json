@@ -1,0 +1,83 @@
+[
+ {
+  "order": 1,
+  "layer": "nen",
+  "file": "01-nen.png",
+  "left": 0,
+  "top": 0,
+  "width": 794,
+  "height": 1123
+ },
+ {
+  "order": 2,
+  "layer": "vong-tron",
+  "file": "02-vong-tron.png",
+  "left": 0.3,
+  "top": 0,
+  "width": 743.4,
+  "height": 336.4
+ },
+ {
+  "order": 3,
+  "layer": "porsche-dong-1",
+  "file": "03-porsche-dong-1.png",
+  "left": 65,
+  "top": 25.9,
+  "width": 593.7,
+  "height": 39.4
+ },
+ {
+  "order": 4,
+  "layer": "porsche-dong-2",
+  "file": "04-porsche-dong-2.png",
+  "left": 65,
+  "top": 91.5,
+  "width": 593.7,
+  "height": 39.7
+ },
+ {
+  "order": 5,
+  "layer": "porsche-dong-3",
+  "file": "05-porsche-dong-3.png",
+  "left": 65,
+  "top": 163.5,
+  "width": 593.7,
+  "height": 39.7
+ },
+ {
+  "order": 6,
+  "layer": "chu-P",
+  "file": "06-chu-P.png",
+  "left": 42.6,
+  "top": 15,
+  "width": 438.4,
+  "height": 317.2
+ },
+ {
+  "order": 7,
+  "layer": "chu-anamera",
+  "file": "07-chu-anamera.png",
+  "left": 317.5,
+  "top": 150.7,
+  "width": 366.4,
+  "height": 35.2
+ },
+ {
+  "order": 8,
+  "layer": "ten-khach",
+  "file": "08-ten-khach.png",
+  "left": 707.6,
+  "top": 358.1,
+  "width": 34.6,
+  "height": 533.8
+ },
+ {
+  "order": 9,
+  "layer": "logo-porsche",
+  "file": "09-logo-porsche.png",
+  "left": 27.2,
+  "top": 994.7,
+  "width": 86.1,
+  "height": 109.5
+ }
+]

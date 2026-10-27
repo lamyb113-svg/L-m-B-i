@@ -49,16 +49,16 @@ function svg({ name, date, mode }) { // mode: 'preview' (ô xám có nhãn) | 'o
   const spec = (x, y, k, v) => `<text x="${x}" y="${y}" font-family="Barlow Condensed" font-size="3.9" fill="${GREY}">${k}</text>
     <text x="${x}" y="${y + 4.8}" font-family="Barlow Condensed" font-weight="700" font-size="4.6" fill="${INK}">${v}</text>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297">
-  ${bg}${photos}${borders}
-  ${DARK ? `<rect x="0" y="0" width="119" height="297" fill="${LEFT_BG}"/>` : ''}
-  <rect x="118.5" y="0" width="1" height="297" fill="${INK}"/>
-  <image href="${LOGO}" x="47" y="31" width="16" height="16" preserveAspectRatio="xMidYMid meet"/>
-  <text transform="translate(132,260) skewX(-14)" font-family="Michroma" font-size="10" textLength="73" lengthAdjust="spacingAndGlyphs" fill="${INK}" stroke="${INK}" stroke-width="0.35">REVUELTO</text>
-  ${spec(133, 265.5, 'ENGINE', 'V12 6.5L')}${spec(173, 265.5, 'POWER', '1001 HP')}
-  ${spec(133, 279.5, 'TOP SPEED', '&gt;350 KM/H')}${spec(173, 279.5, '0-100 KM/H', '2.5 SECONDS')}
-  ${name ? `<text x="105" y="282.8" text-anchor="end" font-family="Syncopate" font-weight="700" font-size="7" textLength="${Math.min(89, 8.9 * name.length)}" lengthAdjust="spacingAndGlyphs" fill="${DARK ? '#FFFFFF' : INK}">${name}</text>` : ''}
-  ${date && DARK ? `<text x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="#FFFFFF"><tspan fill="${GOLD}">${date.slice(0, 2)}</tspan>${date.slice(2, -2)}<tspan fill="${GOLD}">${date.slice(-2)}</tspan></text>` : ''}
-  ${date && !DARK ? `<text x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="none" stroke="${GREY}" stroke-width="0.22">${date}</text>` : ''}
+  <g data-layer="nen-va-o-anh">${bg}${photos}</g><g data-layer="vien-o-anh">${borders}</g>
+  ${DARK ? `<rect data-layer="nen-den-trai" x="0" y="0" width="119" height="297" fill="${LEFT_BG}"/>` : ''}
+  <rect data-layer="duong-ke-doc" x="118.5" y="0" width="1" height="297" fill="${INK}"/>
+  <image data-layer="logo-lamborghini" href="${LOGO}" x="47" y="31" width="16" height="16" preserveAspectRatio="xMidYMid meet"/>
+  <text data-layer="chu-revuelto" transform="translate(132,260) skewX(-14)" font-family="Michroma" font-size="10" textLength="73" lengthAdjust="spacingAndGlyphs" fill="${INK}" stroke="${INK}" stroke-width="0.35">REVUELTO</text>
+  <g data-layer="thong-so">${spec(133, 265.5, 'ENGINE', 'V12 6.5L')}${spec(173, 265.5, 'POWER', '1001 HP')}
+  ${spec(133, 279.5, 'TOP SPEED', '&gt;350 KM/H')}${spec(173, 279.5, '0-100 KM/H', '2.5 SECONDS')}</g>
+  ${name ? `<text data-layer="ten-khach" x="105" y="282.8" text-anchor="end" font-family="Syncopate" font-weight="700" font-size="7" textLength="${Math.min(89, 8.9 * name.length)}" lengthAdjust="spacingAndGlyphs" fill="${DARK ? '#FFFFFF' : INK}">${name}</text>` : ''}
+  ${date && DARK ? `<text data-layer="ngay" x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="#FFFFFF"><tspan fill="${GOLD}">${date.slice(0, 2)}</tspan>${date.slice(2, -2)}<tspan fill="${GOLD}">${date.slice(-2)}</tspan></text>` : ''}
+  ${date && !DARK ? `<text data-layer="ngay" x="96" y="289.5" text-anchor="end" font-family="Syncopate" font-size="4.6" textLength="${4.2 * date.length}" lengthAdjust="spacingAndGlyphs" fill="none" stroke="${GREY}" stroke-width="0.22">${date}</text>` : ''}
 </svg>`;
 }
 const html = s => `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Michroma&family=Syncopate:wght@400;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
@@ -67,6 +67,7 @@ const html = s => `<!doctype html><html><head><link href="https://fonts.googleap
 (async () => {
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 794, height: 1123 }, deviceScaleFactor: 3.125 });
+  if (process.env.LAYERS) { await require('../layers-lib.js')(p, html(svg({ name: NAME, date: DATE, mode: 'overlay' })), process.env.LAYERS); return b.close(); }
   const slug = NAME.replace(/\s+/g, '-') + (DARK ? '-dark' : '');
   const jobs = [
     [`preview-${slug}`, { name: NAME, date: DATE, mode: 'preview' }],

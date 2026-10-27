@@ -1,0 +1,83 @@
+[
+ {
+  "order": 1,
+  "layer": "nen-va-o-anh",
+  "file": "01-nen-va-o-anh.png",
+  "left": 0,
+  "top": 0,
+  "width": 794,
+  "height": 1123
+ },
+ {
+  "order": 2,
+  "layer": "vien-o-anh",
+  "file": "02-vien-o-anh.png",
+  "left": 462.8,
+  "top": 35.5,
+  "width": 314.3,
+  "height": 904.1
+ },
+ {
+  "order": 3,
+  "layer": "nen-den-trai",
+  "file": "03-nen-den-trai.png",
+  "left": 0,
+  "top": 0,
+  "width": 451.2,
+  "height": 1123
+ },
+ {
+  "order": 4,
+  "layer": "duong-ke-doc",
+  "file": "04-duong-ke-doc.png",
+  "left": 446.4,
+  "top": 0,
+  "width": 6.7,
+  "height": 1123
+ },
+ {
+  "order": 5,
+  "layer": "logo-lamborghini",
+  "file": "05-logo-lamborghini.png",
+  "left": 180.2,
+  "top": 115.9,
+  "width": 55.4,
+  "height": 63.4
+ },
+ {
+  "order": 6,
+  "layer": "chu-revuelto",
+  "file": "06-chu-revuelto.png",
+  "left": 500.2,
+  "top": 951.8,
+  "width": 279.4,
+  "height": 33.6
+ },
+ {
+  "order": 7,
+  "layer": "thong-so",
+  "file": "07-thong-so.png",
+  "left": 501.8,
+  "top": 991.8,
+  "width": 232.3,
+  "height": 84.5
+ },
+ {
+  "order": 8,
+  "layer": "ten-khach",
+  "file": "08-ten-khach.png",
+  "left": 163.9,
+  "top": 1049.7,
+  "width": 230.4,
+  "height": 21.1
+ },
+ {
+  "order": 9,
+  "layer": "ngay",
+  "file": "09-ngay.png",
+  "left": 203.5,
+  "top": 1080.7,
+  "width": 159.1,
+  "height": 15
+ }
+]
